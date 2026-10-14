@@ -1,8 +1,6 @@
+import java.io.File;
+import org.openqa.selenium.chrome.ChromeOptions;
 
-
-
-import java.nio.file.Path;
-import java.nio.file.Paths;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -14,40 +12,76 @@ import org.testng.annotations.Test;
 
 public class LocalLoginTest {
 
-    private WebDriver driver;
+    WebDriver driver;
 
-    @BeforeMethod
-    public void setUp() {
-        driver = new ChromeDriver();
+
+
+@BeforeMethod
+public void setUp() {
+    ChromeOptions options = new ChromeOptions();
+
+    options.addArguments("--headless=new");
+    options.addArguments("--no-sandbox");
+    options.addArguments("--disable-dev-shm-usage");
+    options.addArguments("--window-size=1920,1080");
+
+    driver = new ChromeDriver(options);
+
+    String page = new File("webpage/login.html")
+            .getAbsoluteFile()
+            .toURI()
+            .toString();
+
+    driver.get(page);
+}
+
+
+
+    @Test
+    public void validLoginTest() {
+        driver.findElement(By.id("username"))
+                .sendKeys("student");
+
+        driver.findElement(By.id("password"))
+                .sendKeys("12345");
+
+        driver.findElement(By.id("loginButton")).click();
+
+        String message =
+                driver.findElement(By.id("message")).getText();
+
+        System.out.println("Message: " + message);
+
+        Assert.assertEquals(message, "Login Successful");
     }
 
     @Test
-    public void testLoginPage() {
-
-        Path htmlFile = Paths.get("webpage", "login.html")
-                             .toAbsolutePath();
-
-        driver.get(htmlFile.toUri().toString());
-
-        // Enter username
+    public void invalidLoginTest() {
         driver.findElement(By.id("username"))
-              .sendKeys("testuser");
+                .sendKeys("wrong");
 
-        // Enter password
         driver.findElement(By.id("password"))
-              .sendKeys("test123");
+                .sendKeys("wrong");
 
-        // Click Login
         driver.findElement(By.id("loginButton")).click();
 
-        // Verify the success message
-        String message = driver.findElement(By.id("message"))
-                               .getText();
+        String message =
+                driver.findElement(By.id("message")).getText();
+
+        System.out.println("Message: " + message);
 
         Assert.assertEquals(
-            message,
-            "Login submitted successfully"
-        );
+                message, "Invalid Username or Password");
+    }
+
+    @Test
+    public void checkBackgroundColor() {
+        String bgColor = driver.findElement(By.id("loginBox"))
+                .getCssValue("background-color");
+
+        System.out.println("Background Color: " + bgColor);
+
+        Assert.assertEquals(bgColor, "rgba(173, 216, 230, 1)");
     }
 
     @AfterMethod
@@ -57,5 +91,3 @@ public class LocalLoginTest {
         }
     }
 }
-
-
