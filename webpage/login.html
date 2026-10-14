@@ -1,26 +1,38 @@
-
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Local Login Page</title>
+    <title>Student Login</title>
 </head>
 <body>
-    <h2>Login Page</h2>
+    <div id="loginBox"
+         style="background-color: lightblue; width: 300px; height: 200px">
+        <h2>Student Login</h2>
 
-    <form onsubmit="event.preventDefault();
-                    document.getElementById('message').textContent =
-                    'Login submitted successfully';">
-        <label>Username:</label>
-        <input type="text" id="username" required>
+        <input id="username" type="text" placeholder="Username">
         <br><br>
 
-        <label>Password:</label>
-        <input type="password" id="password" required>
+        <input id="password" type="password" placeholder="Password">
         <br><br>
 
-        <button type="submit" id="loginButton">Login</button>
-    </form>
+        <button id="loginButton" onclick="login()">Login</button>
+        <div id="message"></div>
+    </div>
 
-    <p id="message"></p>
+    <script>
+        function login() {
+            var username =
+                document.getElementById("username").value;
+            var password =
+                document.getElementById("password").value;
+
+            if (username === "student" && password === "12345") {
+                document.getElementById("message").innerText =
+                    "Login Successful";
+            } else {
+                document.getElementById("message").innerText =
+                    "Invalid Username or Password";
+            }
+        }
+    </script>
 </body>
 </html>
